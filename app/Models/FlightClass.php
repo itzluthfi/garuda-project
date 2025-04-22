@@ -14,6 +14,7 @@ class FlightClass extends Model
     protected $fillable = [
         'flight_id',
         'class_type',
+        'description',
         'price',
         'total_seats',
     ];

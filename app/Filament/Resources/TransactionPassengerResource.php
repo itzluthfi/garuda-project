@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AirportResource\Pages;
-use App\Filament\Resources\AirportResource\RelationManagers;
-use App\Models\Airport;
+use App\Filament\Resources\TransactionPassengerResource\Pages;
+use App\Filament\Resources\TransactionPassengerResource\RelationManagers;
+use App\Models\TransactionPassenger;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,29 +13,28 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AirportResource extends Resource
+class TransactionPassengerResource extends Resource
 {
-    protected static ?string $model = Airport::class;
+    protected static ?string $model = TransactionPassenger::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('iata_code')
+                Forms\Components\TextInput::make('transaction_id')
                     ->required()
-                    ->maxLength(255),
+                    ->numeric(),
+                Forms\Components\TextInput::make('flight_seat_id')
+                    ->required()
+                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
-                    ->image()
+                Forms\Components\DatePicker::make('date_of_birth')
                     ->required(),
-                Forms\Components\TextInput::make('city')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('country')
+                Forms\Components\TextInput::make('nationality')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -45,23 +44,18 @@ class AirportResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
-                        ->label('Image')
-                        ->disk('public')
-                        ->height(50)
-                        ->width(50)
-                        ->circular()
-                        ->extraImgAttributes([
-                            'class' => 'shadow rounded',
-                        ]),
-                Tables\Columns\TextColumn::make('iata_code')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('transaction_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('flight_seat_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                
-                Tables\Columns\TextColumn::make('city')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('country')
+                Tables\Columns\TextColumn::make('date_of_birth')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('nationality')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
@@ -93,7 +87,7 @@ class AirportResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAirports::route('/'),
+            'index' => Pages\ManageTransactionPassengers::route('/'),
         ];
     }
 }

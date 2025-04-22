@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AirlineResource\Pages;
-use App\Filament\Resources\AirlineResource\RelationManagers;
-use App\Models\Airline;
+use App\Filament\Resources\FlightSeatResource\Pages;
+use App\Filament\Resources\FlightSeatResource\RelationManagers;
+use App\Models\FlightSeat;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,25 +13,29 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AirlineResource extends Resource
+class FlightSeatResource extends Resource
 {
-    protected static ?string $model = Airline::class;
+    protected static ?string $model = FlightSeat::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('code')
+                Forms\Components\TextInput::make('flight_id')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('name')
+                    ->numeric(),
+                Forms\Components\TextInput::make('row')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('logo')
+                    ->numeric(),
+                Forms\Components\TextInput::make('column')
                     ->required()
-                    ->maxLength(255),
+                    ->numeric(),
+                Forms\Components\TextInput::make('class_type')
+                    ->required(),
+                Forms\Components\Toggle::make('is_available')
+                    ->required(),
             ]);
     }
 
@@ -39,12 +43,18 @@ class AirlineResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('logo')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('flight_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('row')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('column')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('class_type'),
+                Tables\Columns\IconColumn::make('is_available')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -75,7 +85,7 @@ class AirlineResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAirlines::route('/'),
+            'index' => Pages\ManageFlightSeats::route('/'),
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AirlineResource\Pages;
-use App\Filament\Resources\AirlineResource\RelationManagers;
-use App\Models\Airline;
+use App\Filament\Resources\PromoCodeResource\Pages;
+use App\Filament\Resources\PromoCodeResource\RelationManagers;
+use App\Models\PromoCode;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,11 +13,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AirlineResource extends Resource
+class PromoCodeResource extends Resource
 {
-    protected static ?string $model = Airline::class;
+    protected static ?string $model = PromoCode::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     public static function form(Form $form): Form
     {
@@ -25,13 +25,16 @@ class AirlineResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('code')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('name')
+                    ,
+                Forms\Components\TextInput::make('discount_type')
+                    ->required(),
+                Forms\Components\TextInput::make('discount')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('logo')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
+                Forms\Components\DateTimePicker::make('valid_until')
+                    ->required(),
+                Forms\Components\Toggle::make('is_used')
+                    ->required(),
             ]);
     }
 
@@ -40,11 +43,17 @@ class AirlineResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('logo')
-                    ->searchable(),
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('discount_type'),
+                Tables\Columns\TextColumn::make('discount')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('valid_until')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_used')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -75,7 +84,7 @@ class AirlineResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAirlines::route('/'),
+            'index' => Pages\ManagePromoCodes::route('/'),
         ];
     }
 }

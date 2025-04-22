@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('flight_number');
             $table->foreignId('airline_id')->constrained()->cascadeOnDelete();
+           
             $table->softDeletes();
             $table->timestamps();
         });

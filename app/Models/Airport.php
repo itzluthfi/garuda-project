@@ -12,7 +12,7 @@ class Airport extends Model
     use HasFactory,SoftDeletes;
 
     protected $guarded = [];
-    protected $fillable = ['iata_code', 'name', 'city', 'country','image'];
+    protected $fillable = ['iata_code', 'name', 'city','province', 'country','image'];
 
     public function FlightSegments() {
         return $this->hasMany(FlightSegment::class);

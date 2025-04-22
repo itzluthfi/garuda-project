@@ -11,7 +11,7 @@ class Airline extends Model
     /** @use HasFactory<\Database\Factories\AirlineFactory> */
     use HasFactory,SoftDeletes;
 
-    protected $fillable = ['code', 'name', 'logo'];
+    protected $fillable = ['code', 'name', 'logo','country'];
 
     public function flights()
     {
